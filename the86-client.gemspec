@@ -16,4 +16,6 @@ Gem::Specification.new do |gem|
   gem.version       = The86::Client::VERSION
 
   gem.add_development_dependency "minitest"
+  gem.add_development_dependency "guard"
+  gem.add_development_dependency "guard-minitest"
 end
