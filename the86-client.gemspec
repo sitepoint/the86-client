@@ -14,4 +14,6 @@ Gem::Specification.new do |gem|
   gem.name          = "the86-client"
   gem.require_paths = ["lib"]
   gem.version       = The86::Client::VERSION
+
+  gem.add_development_dependency "minitest"
 end
