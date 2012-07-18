@@ -34,14 +34,18 @@ module The86
       end
 
       def sendable_attributes
-        attributes.reject { |key| [:id, :created_at, :updated_at].include?(key) }
+        attributes.reject do |key, value|
+          [:id, :created_at, :updated_at].include?(key) ||
+            value.kind_of?(Resource) ||
+            value.nil?
+        end
       end
 
       private
 
       def save_new
         self.attributes = self.class.connection.post(
-          path: self.class.api_path,
+          path: self.class.api_path(attributes),
           data: sendable_attributes,
           status: 201
         )

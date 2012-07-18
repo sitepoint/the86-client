@@ -16,6 +16,10 @@ module The86::Client
       @attributes = attributes
     end
 
+    def create(attributes)
+      @klass.new(attributes.merge(@attributes)).tap(&:save)
+    end
+
     def each
       records.each do |attributes|
         yield @klass.new(attributes.merge(@attributes))

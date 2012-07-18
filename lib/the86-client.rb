@@ -7,6 +7,7 @@ require "the86-client/version"
 # Resources
 require "the86-client/user"
 require "the86-client/site"
+require "the86-client/post"
 require "the86-client/conversation"
 
 module The86

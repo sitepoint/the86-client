@@ -6,6 +6,10 @@ module The86::Client
     attribute :updated_at, DateTime
     attribute :site, Site
 
+    attribute :content, String # For creating new Conversation.
+
+    attribute :posts, Array[Post]
+
     def self.api_path(params = {})
       "sites/#{params[:site].slug}/conversations"
     end
