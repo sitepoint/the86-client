@@ -1,6 +1,7 @@
 require "the86-client/connection"
 require "the86-client/errors"
 require "the86-client/resource"
+require "the86-client/user"
 require "the86-client/version"
 
 module The86
