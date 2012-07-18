@@ -29,8 +29,8 @@ module The86
         raise "Resource must implement .api_path(params = {})"
       end
 
-      def api_path
-        "%s/%d" % [ self.class.api_path, id ]
+      def api_path(params)
+        "%s/%d" % [ self.class.api_path(params), id ]
       end
 
       def sendable_attributes
@@ -53,7 +53,7 @@ module The86
 
       def save_existing
         self.attributes = self.class.connection.patch(
-          path: self.api_path,
+          path: self.api_path(attributes),
           data: sendable_attributes,
           status: 200
         )

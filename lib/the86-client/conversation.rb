@@ -8,10 +8,23 @@ module The86::Client
 
     attribute :content, String # For creating new Conversation.
 
-    attribute :posts, Array[Post]
-
     def self.api_path(params = {})
-      "sites/#{params[:site].slug}/conversations"
+      site = params.fetch(:site)
+      "sites/#{site.slug}/conversations"
+    end
+
+    def posts=(posts)
+      @_posts = posts.map do |post|
+        if post.kind_of?(Post)
+          post
+        else
+          Post.new(post)
+        end
+      end
+    end
+
+    def posts
+      @_posts ||= Post.where(site: site, conversation: self)
     end
 
   end
