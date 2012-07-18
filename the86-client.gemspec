@@ -18,6 +18,10 @@ Gem::Specification.new do |gem|
   ##
   # Runtime dependencies.
 
+  # Faraday: HTTP client.
+  gem.add_runtime_dependency "faraday"
+  gem.add_runtime_dependency "faraday_middleware"
+  gem.add_runtime_dependency "hashie"
 
   ##
   # Development dependencies.
