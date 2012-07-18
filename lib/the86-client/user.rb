@@ -7,7 +7,9 @@ module The86
       attribute :created_at, DateTime
       attribute :updated_at, DateTime
 
-      def api_path; "users" end
+      def self.api_path(params = {})
+        "users"
+      end
 
     end
   end

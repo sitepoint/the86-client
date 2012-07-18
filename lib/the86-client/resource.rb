@@ -10,12 +10,27 @@ module The86
         new(attributes).tap(&:save)
       end
 
+      # Criteria is limited to parent objects,
+      # e.g. {site: Site.new(slug: "google")} for /sites/google/conversations
+      def self.where(criteria = {})
+        ResourceCollection.new(
+          connection,
+          api_path(criteria),
+          self,
+          criteria
+        )
+      end
+
       def save
         id ? save_existing : save_new
       end
 
+      def self.api_path(params = {})
+        raise "Resource must implement .api_path(params = {})"
+      end
+
       def api_path
-        raise "Resource must implement #api_path"
+        "%s/%d" % [ self.class.api_path, id ]
       end
 
       def sendable_attributes
@@ -26,14 +41,18 @@ module The86
 
       def save_new
         self.attributes = self.class.connection.post(
-          path: api_path,
+          path: self.class.api_path,
           data: sendable_attributes,
           status: 201
         )
       end
 
       def save_existing
-        raise "TODO"
+        self.attributes = self.class.connection.patch(
+          path: self.api_path,
+          data: sendable_attributes,
+          status: 200
+        )
       end
 
       def self.connection

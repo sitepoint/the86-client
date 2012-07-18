@@ -13,10 +13,22 @@ module The86
         end
       end
 
+      def get(options)
+        dispatch(:get, options)
+      end
+
+      def patch(options)
+        dispatch(:patch, options)
+      end
+
       def post(options)
+        dispatch(:post, options)
+      end
+
+      def dispatch(method, options)
         path = options.fetch(:path)
-        data = options.fetch(:data)
-        response = @faraday.post(path, data)
+        data = options[:data]
+        response = @faraday.run_request(method, path, data, @faraday.headers)
         assert_http_status(response, options[:status])
         response.body
       end
@@ -35,7 +47,7 @@ module The86
         when 422
           raise ValidationFailed, "Validation failed: #{response.body.to_s}"
         else
-          raise Error, "Expected HTTP 201, got HTTP #{response.status}"
+          raise Error, "Expected HTTP #{status}, got HTTP #{response.status}"
         end
       end
 
