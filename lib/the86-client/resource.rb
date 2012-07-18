@@ -18,12 +18,16 @@ module The86
         raise "Resource must implement #api_path"
       end
 
+      def sendable_attributes
+        attributes.reject { |key| [:id, :created_at, :updated_at].include?(key) }
+      end
+
       private
 
       def save_new
         self.attributes = self.class.connection.post(
           path: api_path,
-          data: attributes.reject { |k| k == :id },
+          data: sendable_attributes,
           status: 201
         )
       end

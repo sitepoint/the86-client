@@ -4,6 +4,8 @@ module The86
 
       attribute :id, Integer
       attribute :name, String
+      attribute :created_at, DateTime
+      attribute :updated_at, DateTime
 
       def api_path; "users" end
 
