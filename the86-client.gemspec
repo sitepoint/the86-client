@@ -15,12 +15,23 @@ Gem::Specification.new do |gem|
   gem.require_paths = ["lib"]
   gem.version       = The86::Client::VERSION
 
+  ##
+  # Runtime dependencies.
+
+
+  ##
+  # Development dependencies.
+
+  # Guard: watch files, trigger commands
+  gem.add_development_dependency "guard"
+  gem.add_development_dependency "guard-minitest"
+
   # MiniTest: unit test / spec library.
   gem.add_development_dependency "minitest"
   gem.add_development_dependency "ansi"
   gem.add_development_dependency "turn"
 
-  # Guard: watch files, trigger commands
-  gem.add_development_dependency "guard"
-  gem.add_development_dependency "guard-minitest"
+  # WebMock: HTTP request stubs and expectations.
+  gem.add_development_dependency "webmock"
+
 end
