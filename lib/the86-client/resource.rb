@@ -6,27 +6,40 @@ module The86
 
       include Virtus
 
-      def self.create(attributes)
-        new(attributes).tap(&:save)
+      # Assigned by Virtus constructor.
+      attr_accessor :oauth_token
+
+      ##
+      # Class methods
+
+      class << self
+
+        def create(attributes)
+          new(attributes).tap(&:save)
+        end
+
+        # Criteria is limited to parent objects,
+        # e.g. {site: Site.new(slug: "google")} for /sites/google/conversations
+        def where(criteria = {})
+          ResourceCollection.new(
+            Connection.new,
+            api_path(criteria),
+            self,
+            criteria
+          )
+        end
+
+        def api_path(params = {})
+          raise "Resource must implement .api_path(params = {})"
+        end
+
       end
 
-      # Criteria is limited to parent objects,
-      # e.g. {site: Site.new(slug: "google")} for /sites/google/conversations
-      def self.where(criteria = {})
-        ResourceCollection.new(
-          connection,
-          api_path(criteria),
-          self,
-          criteria
-        )
-      end
+      ##
+      # Instance methods
 
       def save
         id ? save_existing : save_new
-      end
-
-      def self.api_path(params = {})
-        raise "Resource must implement .api_path(params = {})"
       end
 
       def api_path(params)
@@ -41,10 +54,11 @@ module The86
         end
       end
 
+
       private
 
       def save_new
-        self.attributes = self.class.connection.post(
+        self.attributes = connection.post(
           path: self.class.api_path(attributes),
           data: sendable_attributes,
           status: 201
@@ -52,15 +66,17 @@ module The86
       end
 
       def save_existing
-        self.attributes = self.class.connection.patch(
+        self.attributes = connection.patch(
           path: self.api_path(attributes),
           data: sendable_attributes,
           status: 200
         )
       end
 
-      def self.connection
-         @_connection = Connection.new
+      def connection
+        Connection.new.tap do |c|
+          c.prepend OauthBearerAuthorization, oauth_token if oauth_token
+        end
       end
 
     end

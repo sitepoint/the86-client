@@ -12,8 +12,12 @@ module The86::Client
           status: 201,
           request_body: {content: "Hi!", in_reply_to: 64},
           response_body: {id: 96, content: "Hi!", in_reply_to: 64},
+          request_headers: {"Authorization" => "Bearer SecretTokenHere"},
         )
-        post = original_post.reply(content: "Hi!")
+        post = original_post.reply(
+          content: "Hi!",
+          oauth_token: "SecretTokenHere",
+        )
         post.conversation.id.must_equal conversation.id
         post.in_reply_to.must_equal original_post.id
         post.content.must_equal "Hi!"
@@ -28,8 +32,12 @@ module The86::Client
           status: 201,
           request_body: {content: "+1"},
           response_body: {id: 96, content: "+1"},
+          request_headers: {"Authorization" => "Bearer SecretTokenHere"},
         )
-        post = conversation.posts.create(content: "+1")
+        post = conversation.posts.create(
+          content: "+1",
+          oauth_token: "SecretTokenHere",
+        )
         post.conversation.id.must_equal conversation.id
         post.in_reply_to.must_equal nil
         post.content.must_equal "+1"
@@ -45,7 +53,7 @@ module The86::Client
     end
 
     def site
-      Site.new(slug: "test")
+      The86::Client.site("test")
     end
 
   end

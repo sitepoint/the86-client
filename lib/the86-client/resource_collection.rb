@@ -16,8 +16,12 @@ module The86::Client
       @attributes = attributes
     end
 
+    def build(attributes)
+      @klass.new(attributes.merge(@attributes))
+    end
+
     def create(attributes)
-      @klass.new(attributes.merge(@attributes)).tap(&:save)
+      build(attributes).tap(&:save)
     end
 
     def each

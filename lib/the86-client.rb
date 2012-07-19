@@ -1,24 +1,49 @@
-require "the86-client/connection"
-require "the86-client/errors"
-require "the86-client/resource"
-require "the86-client/resource_collection"
-require "the86-client/version"
+%w{
+  version
+  connection
+  errors
+  oauth_bearer_authorization
 
-# Resources
-require "the86-client/user"
-require "the86-client/site"
-require "the86-client/post"
-require "the86-client/conversation"
+  resource
+  resource_collection
+  user
+  site
+  post
+  conversation
+}.each { |r| require "the86-client/#{r}" }
 
 module The86
   module Client
 
-    def self.domain= domain
-      @domain = domain
+    # API entry point.
+    def self.site(slug)
+      Site.new(slug: slug)
     end
 
-    def self.domain
-      @domain || raise("Domain not configured: #{name}.domain = \"example.org\"")
+    # Configuration.
+    class << self
+
+      attr_writer :domain
+      attr_writer :credentials
+
+      def domain
+        @domain ||
+          raise("Domain not configured: #{name}.domain = \"example.org\"")
+      end
+
+      def credentials
+        @credentials ||
+          raise("Credentials not configured: #{name}.credentials = [username, password]")
+      end
+
+      def disable_https!
+        @scheme = "http"
+      end
+
+      def scheme
+        @scheme || "https"
+      end
+
     end
 
   end

@@ -9,8 +9,13 @@ module The86
         @faraday = Faraday.new(url) do |conn|
           conn.request :json
           conn.response :json
+          conn.basic_auth(*Client.credentials)
           conn.adapter Faraday.default_adapter
         end
+      end
+
+      def prepend(*parameters)
+        @faraday.builder.insert(0, *parameters)
       end
 
       def get(options)
@@ -36,7 +41,7 @@ module The86
       private
 
       def url
-        "https://#{::The86::Client.domain}/api/v1"
+        "%s://%s/api/v1" % [ Client.scheme, Client.domain ]
       end
 
       def assert_http_status(response, status)

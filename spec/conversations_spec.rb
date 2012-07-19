@@ -28,10 +28,15 @@ module The86::Client
           method: :post,
           status: 201,
           request_body: {content: "A new conversation."},
-          response_body: {id: 2, posts: [{id: 5, content: "A new conversation."}]}
+          response_body: {id: 2, posts: [{id: 5, content: "A new conversation."}]},
+          request_headers: {"Authorization" => "Bearer secrettoken"},
         )
 
-        c = site.conversations.create(content: "A new conversation.")
+        c = site.conversations.create(
+          content: "A new conversation.",
+          oauth_token: "secrettoken",
+        )
+
         c.id.must_equal 2
         posts = c.posts
         posts.to_a.length.must_equal 1
@@ -45,7 +50,7 @@ module The86::Client
 
     def expect_get_conversations(options)
       expect_request({
-        url: "https://example.org/api/v1/sites/test/conversations",
+        url: "https://user:pass@example.org/api/v1/sites/test/conversations",
         method: :get,
         status: 200,
       }.merge(options))

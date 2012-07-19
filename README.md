@@ -1,29 +1,32 @@
-# The86::Client
+The86::Client
+=============
 
-TODO: Write a gem description
+Ruby client for "The 86" conversation API server.
 
-## Installation
+Usage
+-----
 
-Add this line to your application's Gemfile:
+```ruby
+The86::Client.domain = "the86.yourdomain.com"
 
-    gem 'the86-client'
+site = Site.new(slug: "yourdomain")
 
-And then execute:
+user = The86::Client::User.create(name: "Test User")
+conversation = Site.new(slug: "example").conversations.create(
+  content: "Hello world!"
+)
 
-    $ bundle
+user = The86::Client::User.create(name: "Another User")
+```
 
-Or install it yourself as:
+TODO
+----
 
-    $ gem install the86-client
+* HTTP Basic Auth for Users API.
+* OAuth2 Bearer Token Auth for other APIs.
 
-## Usage
 
-TODO: Write usage instructions here
+Licence
+-------
 
-## Contributing
-
-1. Fork it
-2. Create your feature branch (`git checkout -b my-new-feature`)
-3. Commit your changes (`git commit -am 'Add some feature'`)
-4. Push to the branch (`git push origin my-new-feature`)
-5. Create new Pull Request
+(c) SitePoint Pty Ltd, 2012.  All rights reserved.
