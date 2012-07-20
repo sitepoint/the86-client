@@ -41,7 +41,7 @@ module The86
       # Class methods.
 
       def self.collection_path(parent)
-        [parent && parent.api_path, @collection_name].compact.join("/")
+        [parent && parent.resource_path, @collection_name].compact.join("/")
       end
 
       ##
@@ -52,7 +52,7 @@ module The86
         id
       end
 
-      def api_path
+      def resource_path
         "%s/%s" % [ self.class.collection_path(@parent), url_id ]
       end
 
@@ -85,7 +85,7 @@ module The86
 
       def save_existing
         self.attributes = connection.patch(
-          path: api_path,
+          path: resource_path,
           data: sendable_attributes,
           status: 200
         )
