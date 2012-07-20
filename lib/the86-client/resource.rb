@@ -17,15 +17,19 @@ module The86
 
       class << self
 
-        def collection(collection_name)
-          @collection_name = collection_name
+        # The path component for the collection, e.g. "discussions"
+        def path(path)
+          @path = path
         end
 
+        # The name of the parent resource attribute.
+        # e.g: belongs_to :site
         def belongs_to(name)
           alias_method "#{name}=", :parent=
           alias_method name, :parent
         end
 
+        # The name of a child collection.
         def has_many(name, class_proc)
           define_method "#{name}=" do |items|
             (@_has_many ||= {})[name] = items
@@ -41,7 +45,7 @@ module The86
       # Class methods.
 
       def self.collection_path(parent)
-        [parent && parent.resource_path, @collection_name].compact.join("/")
+        [parent && parent.resource_path, @path].compact.join("/")
       end
 
       ##

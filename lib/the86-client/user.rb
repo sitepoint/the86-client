@@ -7,7 +7,7 @@ module The86
       attribute :created_at, DateTime
       attribute :updated_at, DateTime
 
-      collection "users"
+      path "users"
 
     end
   end

@@ -6,7 +6,7 @@ module The86::Client
     attribute :created_at, DateTime
     attribute :updated_at, DateTime
 
-    collection "conversations"
+    path "conversations"
     belongs_to :site
     has_many :posts, ->{ Post }
 

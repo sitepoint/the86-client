@@ -7,7 +7,7 @@ module The86::Client
     attribute :created_at, DateTime
     attribute :updated_at, DateTime
 
-    collection "posts"
+    path "posts"
     belongs_to :conversation
 
     def reply(attributes)

@@ -6,7 +6,7 @@ module The86::Client
     attribute :created_at, DateTime
     attribute :updated_at, DateTime
 
-    collection "sites"
+    path "sites"
     has_many :conversations, ->{ Conversation }
 
     def url_id
