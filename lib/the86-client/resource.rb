@@ -40,7 +40,7 @@ module The86
       ##
       # Class methods.
 
-      def self.api_path(parent)
+      def self.collection_path(parent)
         [parent && parent.api_path, @collection_name].compact.join("/")
       end
 
@@ -53,7 +53,7 @@ module The86
       end
 
       def api_path
-        "%s/%s" % [ self.class.api_path(@parent), url_id ]
+        "%s/%s" % [ self.class.collection_path(@parent), url_id ]
       end
 
       def save
@@ -77,7 +77,7 @@ module The86
 
       def save_new
         self.attributes = connection.post(
-          path: self.class.api_path(@parent),
+          path: self.class.collection_path(@parent),
           data: sendable_attributes,
           status: 201
         )
@@ -85,7 +85,7 @@ module The86
 
       def save_existing
         self.attributes = connection.patch(
-          path: self.api_path,
+          path: api_path,
           data: sendable_attributes,
           status: 200
         )
@@ -101,7 +101,7 @@ module The86
         klass = class_proc.call
         ResourceCollection.new(
           connection,
-          klass.api_path(self),
+          klass.collection_path(self),
           class_proc.call,
           self,
           (@_has_many || {})[name] || nil
