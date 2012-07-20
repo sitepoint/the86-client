@@ -7,23 +7,41 @@ Usage
 -----
 
 ```ruby
+# The domain running The 86 discussion server.
 The86::Client.domain = "the86.yourdomain.com"
 
-site = Site.new(slug: "yourdomain")
+# HTTP Basic Auth credentials allocated for your API client.
+The86::Client.credentials = ["username", "password"]
 
-user = The86::Client::User.create(name: "Test User")
-conversation = Site.new(slug: "example").conversations.create(
-  content: "Hello world!"
+# Create an end-user account:
+user = The86::Client::User.create(name: "John Citizen")
+oauth_token = user.access_tokens.token
+
+# Create a new conversation:
+conversation = The86::Client.site("example").conversations.create(
+  content: "Hello world!",
+  oauth_token: oauth_token
 )
 
-user = The86::Client::User.create(name: "Another User")
+# Reply as another user:
+user = The86::Client::User.create(name: "Jane Taxpayer")
+conversation.posts.first.reply(
+  content: "I concur!",
+  oauth_token: user.access_tokens.first.token
+)
+
+# Follow up to a conversation:
+user = The86::Client::User.create(name: "Joe Six-pack")
+conversation.follow_up(
+  content: "What are you guys talking about?",
+  oauth_token: user.access_tokens.first.token
+)
 ```
 
 TODO
 ----
 
-* HTTP Basic Auth for Users API.
-* OAuth2 Bearer Token Auth for other APIs.
+* Expose user access token in newly created User object.
 
 
 Licence

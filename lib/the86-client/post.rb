@@ -7,15 +7,8 @@ module The86::Client
     attribute :created_at, DateTime
     attribute :updated_at, DateTime
 
-    attribute :conversation, Object
-
-    def self.api_path(params = {})
-      conversation = params.fetch(:conversation)
-      "sites/%s/conversations/%d/posts" % [
-        conversation.site.slug,
-        conversation.id
-      ]
-    end
+    collection "posts"
+    belongs_to :conversation
 
     def reply(attributes)
       conversation.posts.create(

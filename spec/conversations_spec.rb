@@ -45,7 +45,7 @@ module The86::Client
     end
 
     def site
-      @_site ||= Site.new(slug: "test")
+      The86::Client.site("test")
     end
 
     def expect_get_conversations(options)

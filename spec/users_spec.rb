@@ -59,7 +59,7 @@ module The86::Client
           status: 200,
           response_body: [{id: 4, name: "Paul"}, {id: 8, name: "James"}]
         )
-        users = User.where()
+        users = The86::Client.users
         users.to_a.length.must_equal 2
         users.first.name.must_equal "Paul"
       end

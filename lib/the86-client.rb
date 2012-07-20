@@ -15,9 +15,19 @@
 module The86
   module Client
 
-    # API entry point.
+    # API entry points.
+
     def self.site(slug)
       Site.new(slug: slug)
+    end
+
+    def self.users
+      ResourceCollection.new(
+        Connection.new,
+        "users",
+        User,
+        nil
+      )
     end
 
     # Configuration.

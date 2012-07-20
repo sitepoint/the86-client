@@ -9,15 +9,18 @@ module The86::Client
     # Attributes is a Hash of attributes common to all items in collection,
     #   and not fetched in HTTP response, e.g. parent items.
     #   e.g. for conversations: { site: Site.new(slug: "...") }
-    def initialize(connection, path, klass, attributes)
+    # Records is an array of hashes, for pre-populating the collection.
+    #   e.g. when an API response contains collections of child resources.
+    def initialize(connection, path, klass, parent, records = nil)
       @connection = connection
       @path = path
       @klass = klass
-      @attributes = attributes
+      @parent = parent
+      @records = records
     end
 
     def build(attributes)
-      @klass.new(attributes.merge(@attributes))
+      @klass.new(attributes.merge(parent: @parent))
     end
 
     def create(attributes)
@@ -26,14 +29,24 @@ module The86::Client
 
     def each
       records.each do |attributes|
-        yield @klass.new(attributes.merge(@attributes))
+        yield build(attributes)
       end
+    end
+
+    # Cache array representation.
+    # Save building Resources for each record multiple times.
+    def to_a
+      @_to_a = super
+    end
+
+    def [](index)
+      to_a[index]
     end
 
     private
 
     def records
-      @_records ||= @connection.get(path: @path, status: 200)
+      @records ||= @connection.get(path: @path, status: 200)
     end
 
   end

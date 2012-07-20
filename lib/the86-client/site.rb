@@ -6,8 +6,11 @@ module The86::Client
     attribute :created_at, DateTime
     attribute :updated_at, DateTime
 
-    def conversations
-      Conversation.where(site: self)
+    collection "sites"
+    has_many :conversations, ->{ Conversation }
+
+    def url_id
+      slug
     end
 
   end
