@@ -13,17 +13,9 @@ module The86
       attr_accessor :parent
 
       ##
-      # Class methods
+      # Declarative API for subclasses.
 
       class << self
-
-        def create(attributes)
-          new(attributes).tap(&:save)
-        end
-
-        def api_path(parent)
-          [parent && parent.api_path, @collection_name].compact.join("/")
-        end
 
         def collection(collection_name)
           @collection_name = collection_name
@@ -46,18 +38,26 @@ module The86
       end
 
       ##
+      # Class methods.
+
+      def self.api_path(parent)
+        [parent && parent.api_path, @collection_name].compact.join("/")
+      end
+
+      ##
       # Instance methods
 
+      # The value of the identifier in the URL; numeric ID or string slug.
       def url_id
         id
       end
 
-      def save
-        id ? save_existing : save_new
-      end
-
       def api_path
         "%s/%s" % [ self.class.api_path(@parent), url_id ]
+      end
+
+      def save
+        id ? save_existing : save_new
       end
 
       def sendable_attributes
