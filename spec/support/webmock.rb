@@ -23,14 +23,18 @@ module RequestExpectations
     method = options.fetch(:method)
     request_body = options[:request_body]
     response_body = options[:response_body]
+    request_headers = options[:request_headers]
 
     request = {}
     request[:body] = request_body if request_body
+    request[:headers] = request_headers if request_headers
 
     response = {status: options[:status] || 200}
     response[:body] = JSON.generate(response_body) if response_body
 
-    stub_and_assert_request(method, url).with(request).to_return(response)
+    stub_and_assert_request(method, url).
+      with(request).
+      to_return(response)
   end
 end
 
