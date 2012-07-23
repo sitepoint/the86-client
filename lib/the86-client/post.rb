@@ -9,6 +9,7 @@ module The86::Client
 
     path "posts"
     belongs_to :conversation
+    has_one :user, ->{ User }
 
     def reply?
       !!in_reply_to

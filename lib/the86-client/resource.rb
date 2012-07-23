@@ -39,6 +39,15 @@ module The86
           end
         end
 
+        def has_one(name, class_proc)
+          define_method "#{name}=" do |instance|
+            (@_has_one ||= {})[name] = instance
+          end
+          define_method name do
+            has_one_reader(name, class_proc)
+          end
+        end
+
       end
 
       ##
@@ -112,6 +121,18 @@ module The86
         )
       rescue KeyError
         raise Error, "No reference to children :#{name}"
+      end
+
+      def has_one_reader(name, class_proc)
+        klass = class_proc.call
+        record = (@_has_one || {}).fetch(name)
+        if record.is_a?(Resource)
+          record
+        else
+          @_has_one[name] = klass.new(record)
+        end
+      rescue KeyError
+        raise Error, "No reference to child :#{name}"
       end
 
     end

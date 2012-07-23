@@ -44,6 +44,16 @@ module The86::Client
       end
     end
 
+    describe "#user" do
+      let(:post) { Post.new(id: 1, user: {id: 2, name: "John Citizen"}) }
+      it "returns instance of The86::Client::User" do
+        post.user.must_be_instance_of(The86::Client::User)
+      end
+      it "contains the user details" do
+        post.user.name.must_equal "John Citizen"
+      end
+    end
+
     def original_post
       Post.new(id: 64, conversation: conversation, content: "Hello!")
     end
