@@ -10,6 +10,10 @@ module The86::Client
     path "posts"
     belongs_to :conversation
 
+    def reply?
+      !!in_reply_to
+    end
+
     def reply(attributes)
       conversation.posts.create(
         attributes.merge(in_reply_to: id)
