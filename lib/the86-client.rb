@@ -17,6 +17,15 @@ module The86
 
     # API entry points.
 
+    def self.sites
+      ResourceCollection.new(
+        Connection.new,
+        "sites",
+        Site,
+        nil
+      )
+    end
+
     def self.site(slug)
       Site.new(slug: slug)
     end
