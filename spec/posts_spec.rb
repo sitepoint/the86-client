@@ -5,13 +5,22 @@ module The86::Client
   describe Post do
 
     describe "replying to a post" do
-      it "sends in_reply_to" do
+      it "sends in_reply_to_id" do
         expect_request(
           url: "https://example.org/api/v1/sites/test/conversations/32/posts",
           method: :post,
           status: 201,
-          request_body: {content: "Hi!", in_reply_to: 64},
-          response_body: {id: 96, content: "Hi!", in_reply_to: 64},
+          request_body: {content: "Hi!", in_reply_to_id: 64},
+          response_body: {
+            id: 96, content: "Hi!", in_reply_to_id: 64, in_reply_to: {
+              id: 64,
+              content: "Hello!",
+              user: {
+                id: 128,
+                name: "Johnny Original"
+              }
+            }
+          },
           request_headers: {"Authorization" => "Bearer SecretTokenHere"},
         )
         post = original_post.reply(
@@ -19,7 +28,8 @@ module The86::Client
           oauth_token: "SecretTokenHere",
         )
         post.conversation.id.must_equal conversation.id
-        post.in_reply_to.must_equal original_post.id
+        post.in_reply_to_id.must_equal original_post.id
+        post.in_reply_to.user.name.must_equal "Johnny Original"
         post.content.must_equal "Hi!"
       end
     end
@@ -39,7 +49,7 @@ module The86::Client
           oauth_token: "SecretTokenHere",
         )
         post.conversation.id.must_equal conversation.id
-        post.in_reply_to.must_equal nil
+        post.in_reply_to_id.must_equal nil
         post.content.must_equal "+1"
       end
     end
