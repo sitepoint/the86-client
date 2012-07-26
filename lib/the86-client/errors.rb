@@ -4,6 +4,9 @@ module The86
     class Error < StandardError
     end
 
+    class ServerError < Error
+    end
+
     class Unauthorized < Error
       def message
         "Unauthorized"

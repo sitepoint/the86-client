@@ -51,8 +51,28 @@ module The86
           raise Unauthorized
         when 422
           raise ValidationFailed, "Validation failed: #{response.body.to_s}"
+        when 500
+          raise ServerError, internal_server_error_message(status, response)
         else
           raise Error, "Expected HTTP #{status}, got HTTP #{response.status}"
+        end
+      end
+
+      def internal_server_error_message(expected_status, response)
+        body = response.body
+        if body["type"] && body["message"] && body["backtrace"]
+          "Expected HTTP %d, got HTTP %d with error:\n%s\n%s\n\n%s" % [
+            expected_status,
+            response.status,
+            response.body["type"],
+            response.body["message"],
+            response.body["backtrace"].join("\n"),
+          ]
+        else
+          "Expected HTTP %d, got %d" % [
+            expected_status,
+            response.status,
+          ]
         end
       end
 
