@@ -6,7 +6,7 @@ Gem::Specification.new do |gem|
   gem.email         = ["paul@sitepoint.com"]
   gem.description   = %q{Client for The 86 conversation API server}
   gem.summary       = %q{Exposes The 86 conversation API server as an object model.}
-  gem.homepage      = ""
+  gem.homepage      = "https://github.com/sitepoint/the86-client"
 
   gem.files         = `git ls-files`.split($\)
   gem.executables   = gem.files.grep(%r{^bin/}).map{ |f| File.basename(f) }
