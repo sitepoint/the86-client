@@ -61,6 +61,7 @@ module The86
       # Instance methods
 
       # The value of the identifier in the URL; numeric ID or string slug.
+      # TODO: see ResourceCollection#find.
       def url_id
         id
       end

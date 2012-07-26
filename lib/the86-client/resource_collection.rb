@@ -27,6 +27,19 @@ module The86::Client
       build(attributes).tap(&:save)
     end
 
+    # Find and load a resource.
+    #
+    # If Resource#url_id is overridden, specify the attribute name.
+    # TODO: the resource should know its URL attribute name.
+    #
+    # Note that this currently triggers an HTTP GET, then a POST:
+    #   conversation.find(10).posts.create(attributes)
+    # As an alternative, this only triggers the HTTP POST:
+    #   conversation.build(id: 10).posts.create(attributes)
+    def find(id, attribute = :id)
+      build(id: id).load
+    end
+
     def each
       records.each do |attributes|
         yield build(attributes)

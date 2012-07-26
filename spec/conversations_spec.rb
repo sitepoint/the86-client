@@ -44,6 +44,20 @@ module The86::Client
       end
     end
 
+    describe "finding a conversation" do
+      it "gets the conversation, loads data into the resource" do
+        expect_request(
+          url: "https://user:pass@example.org/api/v1/sites/test/conversations/4",
+          method: :get,
+          status: 200,
+          response_body: {id: 4, posts: [{id: 8, content: "A post."}]},
+        )
+        c = site.conversations.find(4)
+        c.id.must_equal 4
+        c.posts.first.content.must_equal "A post."
+      end
+    end
+
     def site
       The86::Client.site("test")
     end
