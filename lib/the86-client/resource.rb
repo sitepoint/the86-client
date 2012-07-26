@@ -73,6 +73,14 @@ module The86
         id ? save_existing : save_new
       end
 
+      def load
+        self.attributes = connection.get(
+          path: resource_path,
+          status: 200
+        )
+        self
+      end
+
       def sendable_attributes
         attributes.reject do |key, value|
           [:id, :created_at, :updated_at].include?(key) ||
