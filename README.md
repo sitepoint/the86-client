@@ -77,4 +77,4 @@ conversation.posts.create(
 Licence
 -------
 
-(c) SitePoint Pty Ltd, 2012.  All rights reserved.
+(c) SitePoint, 2012, MIT license.
