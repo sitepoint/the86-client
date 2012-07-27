@@ -5,12 +5,21 @@ module The86
   module Client
     class Connection
 
+      class << self
+        # Parameters for Faraday's connection.adapter method, e.g:
+        # [:rack, SomeApp]
+        attr_writer :faraday_adapter
+        def faraday_adapter
+          @faraday_adapter || Faraday.default_adapter
+        end
+      end
+
       def initialize
         @faraday = Faraday.new(url) do |conn|
           conn.request :json
           conn.response :json
           conn.basic_auth(*Client.credentials)
-          conn.adapter Faraday.default_adapter
+          conn.adapter *self.class.faraday_adapter
         end
       end
 
