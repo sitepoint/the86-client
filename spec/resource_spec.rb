@@ -27,6 +27,10 @@ module The86::Client
         resource.new(code: "A", parent: parent_resource.new(id: 1)).
           wont_equal resource.new(code: "A", parent: parent_resource.new(id: 2))
       end
+
+      it "is inequal to another type of object" do
+        resource.new(id: 1, code: "A").wont_equal false
+      end
     end
   end
 end
