@@ -1,15 +1,15 @@
 module The86
   module Client
-    class User < Resource
+    class AccessToken < Resource
 
       attribute :id, Integer
-      attribute :name, String
+      attribute :token, String
       attribute :created_at, DateTime
       attribute :updated_at, DateTime
 
-      has_many :access_tokens, ->{ AccessToken }
+      belongs_to :user
 
-      path "users"
+      path "access_tokens"
 
     end
   end

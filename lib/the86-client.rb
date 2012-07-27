@@ -6,6 +6,7 @@
 
   resource
   resource_collection
+  access_token
   user
   site
   post
