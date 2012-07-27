@@ -91,7 +91,9 @@ module The86
       end
 
       def ==(other)
-        attributes == other.attributes &&
+        other.respond_to?(:attributes) &&
+          other.respond_to?(:parent) &&
+          attributes == other.attributes &&
           parent == other.parent
       end
 
