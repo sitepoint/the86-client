@@ -82,6 +82,14 @@ module The86
         self
       end
 
+      def patch(attributes)
+        self.attributes = connection.patch(
+          path: resource_path,
+          data: attributes,
+          status: 200
+        )
+      end
+
       def sendable_attributes
         attributes.reject do |key, value|
           [:id, :created_at, :updated_at].include?(key) ||
