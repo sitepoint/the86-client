@@ -22,5 +22,11 @@ module The86::Client
       )
     end
 
+    def hide(attributes = {})
+      self.oauth_token = attributes[:oauth_token]
+      key = oauth_token ? :hidden_by_user : :hidden_by_site
+      patch(key => true)
+    end
+
   end
 end

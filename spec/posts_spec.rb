@@ -54,13 +54,29 @@ module The86::Client
       end
     end
 
-    describe "#user" do
-      let(:post) { Post.new(id: 1, user: {id: 2, name: "John Citizen"}) }
-      it "returns instance of The86::Client::User" do
-        post.user.must_be_instance_of(The86::Client::User)
+    describe "#hide" do
+      let(:post) { conversation.posts.build(id: 2) }
+      let(:url) { "https://example.org/api/v1/sites/test/conversations/32/posts/2" }
+      it "patches the post as hidden_by_site when no oauth_token" do
+        expect_request(
+          url: url.sub("https://", "https://user:pass@"),
+          method: :patch,
+          status: 200,
+          request_body: {hidden_by_site: true},
+          response_body: {id: 2, hidden_by_site: true},
+        )
+        post.hide
       end
-      it "contains the user details" do
-        post.user.name.must_equal "John Citizen"
+      it "patches the post as hidden_by_user when oauth_token present" do
+        expect_request(
+          url: url,
+          method: :patch,
+          status: 200,
+          request_body: {hidden_by_user: true},
+          request_headers: {"Authorization" => "Bearer secret"},
+          response_body: {id: 2, hidden_by_site: true},
+        )
+        post.hide(oauth_token: "secret")
       end
     end
 

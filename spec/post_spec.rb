@@ -11,5 +11,15 @@ module The86::Client
         Post.new(in_reply_to_id: nil).reply?.must_equal false
       end
     end
+
+    describe "#user" do
+      let(:post) { Post.new(id: 1, user: {id: 2, name: "John Citizen"}) }
+      it "returns instance of The86::Client::User" do
+        post.user.must_be_instance_of(The86::Client::User)
+      end
+      it "contains the user details" do
+        post.user.name.must_equal "John Citizen"
+      end
+    end
   end
 end
