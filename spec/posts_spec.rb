@@ -80,6 +80,32 @@ module The86::Client
       end
     end
 
+    describe "#unhide" do
+      let(:post) { conversation.posts.build(id: 2) }
+      let(:url) { "https://example.org/api/v1/sites/test/conversations/32/posts/2" }
+      it "patches the post as hidden_by_site when no oauth_token" do
+        expect_request(
+          url: url.sub("https://", "https://user:pass@"),
+          method: :patch,
+          status: 200,
+          request_body: {hidden_by_site: false},
+          response_body: {id: 2, hidden_by_site: false},
+        )
+        post.unhide
+      end
+      it "patches the post as hidden_by_user when oauth_token present" do
+        expect_request(
+          url: url,
+          method: :patch,
+          status: 200,
+          request_body: {hidden_by_user: false},
+          request_headers: {"Authorization" => "Bearer secret"},
+          response_body: {id: 2, hidden_by_site: false},
+        )
+        post.unhide(oauth_token: "secret")
+      end
+    end
+
     def original_post
       Post.new(id: 64, conversation: conversation, content: "Hello!")
     end
