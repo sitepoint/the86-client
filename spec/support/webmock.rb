@@ -19,6 +19,8 @@ module RequestExpectations
   end
 
   def expect_request(options)
+    rack_method_override!(options, :patch)
+
     url = options.fetch(:url)
     method = options.fetch(:method)
     request_body = options[:request_body]
@@ -36,6 +38,21 @@ module RequestExpectations
       with(request).
       to_return(response)
   end
+
+  private
+
+  # Rewrite the expectations for Rack::MethodOverride.
+  # See: https://github.com/rack/rack/blob/master/lib/rack/methodoverride.rb
+  # For example an expectation of a PATCH request maps to an actual
+  # expectation of a POST request with PATCH in an override header.
+  def rack_method_override!(options, *methods)
+    if methods.include?(options[:method])
+      options[:request_headers] ||= {}
+      options[:request_headers]["X-Http-Method-Override"] = options[:method]
+      options[:method] = :post
+    end
+  end
+
 end
 
 MiniTest::Spec.send(:include, RequestExpectations)

@@ -32,7 +32,10 @@ module The86
       end
 
       def patch(options)
-        dispatch(:patch, options)
+        # TODO: extract HTTP method override into Faraday middleware.
+        options[:headers] ||= {}
+        options[:headers]["X-Http-Method-Override"] = "patch"
+        dispatch(:post, options)
       end
 
       def post(options)
@@ -42,7 +45,8 @@ module The86
       def dispatch(method, options)
         path = options.fetch(:path)
         data = options[:data]
-        response = @faraday.run_request(method, path, data, @faraday.headers)
+        headers = @faraday.headers.merge(options[:headers] || {})
+        response = @faraday.run_request(method, path, data, headers)
         assert_http_status(response, options[:status])
         response.body
       end
