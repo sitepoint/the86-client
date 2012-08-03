@@ -4,6 +4,10 @@ module The86::Client
 
   describe "Conversations" do
 
+    let(:site) { The86::Client.site("test") }
+    let(:site_url) { "https://example.org/api/v1/sites/test" }
+    let(:conversations_url) { "#{site_url}/conversations" }
+
     describe "listing conversations" do
       it "returns empty array for site without conversations" do
         expect_get_conversations(response_body: [])
@@ -24,7 +28,7 @@ module The86::Client
     describe "creating conversations" do
       it "posts and returns a conversation with the first post content" do
         expect_request(
-          url: "https://example.org/api/v1/sites/test/conversations",
+          url: conversations_url,
           method: :post,
           status: 201,
           request_body: {content: "A new conversation."},
@@ -60,7 +64,7 @@ module The86::Client
 
     describe "hiding and unhiding a conversation" do
       let(:conversation) { site.conversations.build(id: 2) }
-      let(:oauth_url) { "https://example.org/api/v1/sites/test/conversations/2" }
+      let(:oauth_url) { "#{conversations_url}/2" }
       let(:basic_auth_url) { oauth_url.sub("//", "//user:pass@") }
       let(:headers) { Hash.new }
       def expectation(url, hidden_param)
@@ -94,13 +98,9 @@ module The86::Client
       end
     end
 
-    def site
-      The86::Client.site("test")
-    end
-
     def expect_get_conversations(options)
       expect_request({
-        url: "https://user:pass@example.org/api/v1/sites/test/conversations",
+        url: conversations_url.sub("//", "//user:pass@"),
         method: :get,
         status: 200,
       }.merge(options))

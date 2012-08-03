@@ -4,10 +4,19 @@ module The86::Client
 
   describe Post do
 
+    let(:site) { The86::Client.site("test") }
+    let(:conversation) { Conversation.new(id: 32, site: site) }
+    let(:original_post) do
+      Post.new(id: 64, conversation: conversation, content: "Hello!")
+    end
+    let(:site_url) { "https://example.org/api/v1/sites/test" }
+    let(:conversation_url) { "#{site_url}/conversations/32" }
+    let(:posts_url) { "#{conversation_url}/posts" }
+
     describe "replying to a post" do
       it "sends in_reply_to_id" do
         expect_request(
-          url: "https://example.org/api/v1/sites/test/conversations/32/posts",
+          url: posts_url,
           method: :post,
           status: 201,
           request_body: {content: "Hi!", in_reply_to_id: 64},
@@ -37,7 +46,7 @@ module The86::Client
     describe "following up to a conversation" do
       it "creates new Post in the Conversation" do
         expect_request(
-          url: "https://example.org/api/v1/sites/test/conversations/32/posts",
+          url: posts_url,
           method: :post,
           status: 201,
           request_body: {content: "+1"},
@@ -54,68 +63,40 @@ module The86::Client
       end
     end
 
-    describe "#hide" do
+    describe "hiding and unhiding posts" do
       let(:post) { conversation.posts.build(id: 2) }
-      let(:url) { "https://example.org/api/v1/sites/test/conversations/32/posts/2" }
-      it "patches the post as hidden_by_site when no oauth_token" do
-        expect_request(
-          url: url.sub("https://", "https://user:pass@"),
-          method: :patch,
-          status: 200,
-          request_body: {hidden_by_site: true},
-          response_body: {id: 2, hidden_by_site: true},
-        )
-        post.hide
-      end
-      it "patches the post as hidden_by_user when oauth_token present" do
-        expect_request(
+      let(:oauth_url) { "#{posts_url}/2" }
+      let(:basic_auth_url) { oauth_url.sub("//", "//user:pass@") }
+      let(:headers) { Hash.new }
+      def expectation(url, hidden_param)
+        {
           url: url,
           method: :patch,
           status: 200,
-          request_body: {hidden_by_user: true},
-          request_headers: {"Authorization" => "Bearer secret"},
-          response_body: {id: 2, hidden_by_site: true},
-        )
-        post.hide(oauth_token: "secret")
+          request_body: hidden_param,
+          request_headers: headers,
+          response_body: {id: 2}.merge(hidden_param),
+        }
       end
-    end
+      describe "without oauth" do
+        it "patches the post as hidden_by_site when no oauth_token" do
+          expect_request(expectation(basic_auth_url, hidden_by_site: true))
+          post.hide
 
-    describe "#unhide" do
-      let(:post) { conversation.posts.build(id: 2) }
-      let(:url) { "https://example.org/api/v1/sites/test/conversations/32/posts/2" }
-      it "patches the post as hidden_by_site when no oauth_token" do
-        expect_request(
-          url: url.sub("https://", "https://user:pass@"),
-          method: :patch,
-          status: 200,
-          request_body: {hidden_by_site: false},
-          response_body: {id: 2, hidden_by_site: false},
-        )
-        post.unhide
+          expect_request(expectation(basic_auth_url, hidden_by_site: false))
+          post.unhide
+        end
       end
-      it "patches the post as hidden_by_user when oauth_token present" do
-        expect_request(
-          url: url,
-          method: :patch,
-          status: 200,
-          request_body: {hidden_by_user: false},
-          request_headers: {"Authorization" => "Bearer secret"},
-          response_body: {id: 2, hidden_by_site: false},
-        )
-        post.unhide(oauth_token: "secret")
+      describe "with oauth" do
+        let(:headers) { {"Authorization" => "Bearer secret"} }
+        it "patches the post as hidden_by_user when oauth_token present" do
+          expect_request(expectation(oauth_url, hidden_by_user: true))
+          post.hide(oauth_token: "secret")
+
+          expect_request(expectation(oauth_url, hidden_by_user: false))
+          post.unhide(oauth_token: "secret")
+        end
       end
-    end
-
-    def original_post
-      Post.new(id: 64, conversation: conversation, content: "Hello!")
-    end
-
-    def conversation
-      Conversation.new(id: 32, site: site)
-    end
-
-    def site
-      The86::Client.site("test")
     end
 
   end
