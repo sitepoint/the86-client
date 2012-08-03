@@ -58,6 +58,42 @@ module The86::Client
       end
     end
 
+    describe "hiding and unhiding a conversation" do
+      let(:conversation) { site.conversations.build(id: 2) }
+      let(:oauth_url) { "https://example.org/api/v1/sites/test/conversations/2" }
+      let(:basic_auth_url) { oauth_url.sub("//", "//user:pass@") }
+      let(:headers) { Hash.new }
+      def expectation(url, hidden_param)
+        {
+          url: url,
+          method: :patch,
+          status: 200,
+          request_body: hidden_param,
+          request_headers: headers,
+          response_body: {id: 2}.merge(hidden_param),
+        }
+      end
+      describe "without oauth" do
+        it "patches the conversation as hidden_by_site when no oauth_token" do
+          expect_request(expectation(basic_auth_url, hidden_by_site: true))
+          conversation.hide
+
+          expect_request(expectation(basic_auth_url, hidden_by_site: false))
+          conversation.unhide
+        end
+      end
+      describe "with oauth" do
+        let(:headers) { {"Authorization" => "Bearer secret"} }
+        it "patches the conversation as hidden_by_user when oauth_token present" do
+          expect_request(expectation(oauth_url, hidden_by_user: true))
+          conversation.hide(oauth_token: "secret")
+
+          expect_request(expectation(oauth_url, hidden_by_user: false))
+          conversation.unhide(oauth_token: "secret")
+        end
+      end
+    end
+
     def site
       The86::Client.site("test")
     end

@@ -10,5 +10,7 @@ module The86::Client
     belongs_to :site
     has_many :posts, ->{ Post }
 
+    include CanBeHidden
+
   end
 end

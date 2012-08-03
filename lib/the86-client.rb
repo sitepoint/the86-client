@@ -6,6 +6,7 @@
 
   resource
   resource_collection
+  can_be_hidden
   access_token
   user
   site
