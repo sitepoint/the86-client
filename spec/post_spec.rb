@@ -12,6 +12,15 @@ module The86::Client
       end
     end
 
+    describe "is_original?" do
+      it "is true when is_original is true" do
+        Post.new(is_original: true).is_original?.must_equal true
+      end
+      it "is false when is_original is false" do
+        Post.new(is_original: false).is_original?.must_equal false
+      end
+    end
+
     describe "#user" do
       let(:post) { Post.new(id: 1, user: {id: 2, name: "John Citizen"}) }
       it "returns instance of The86::Client::User" do

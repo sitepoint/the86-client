@@ -5,6 +5,7 @@ module The86::Client
     attribute :content, String
     attribute :content_html, String
     attribute :in_reply_to_id, Integer
+    attribute :is_original, Boolean
     attribute :created_at, DateTime
     attribute :original_created_at, DateTime
     attribute :updated_at, DateTime
