@@ -3,6 +3,7 @@ module The86::Client
 
     attribute :id, Integer
     attribute :content, String
+    attribute :content_html, String
     attribute :in_reply_to_id, Integer
     attribute :created_at, DateTime
     attribute :updated_at, DateTime
