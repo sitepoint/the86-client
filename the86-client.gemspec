@@ -23,6 +23,9 @@ Gem::Specification.new do |gem|
   gem.add_runtime_dependency "faraday_middleware"
   gem.add_runtime_dependency "hashie"
 
+  # Addressable: URI implementation.
+  gem.add_runtime_dependency "addressable"
+
   # Virtus: declare attributes on plain Ruby objects.
   gem.add_runtime_dependency "virtus"
 

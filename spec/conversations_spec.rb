@@ -23,6 +23,19 @@ module The86::Client
         c.id.must_equal 10
         c.site.must_equal site
       end
+
+      it "sends posts_since parameter" do
+        expect_get_conversations(
+          response_body: [{id: 10}, {id: 12}],
+          parameters: {posts_since: "time"}
+        )
+        conversations = site.conversations.with_parameters(posts_since: "time")
+        conversations.to_a.size.must_equal 2
+        c = conversations.first
+        c.must_be_instance_of Conversation
+        c.id.must_equal 10
+        c.site.must_equal site
+      end
     end
 
     describe "creating conversations" do

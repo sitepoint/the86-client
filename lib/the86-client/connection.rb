@@ -1,3 +1,4 @@
+require "addressable/uri"
 require "faraday"
 require "faraday_middleware"
 
@@ -44,7 +45,15 @@ module The86
 
       def dispatch(method, options)
         path = options.fetch(:path)
+        parameters = options[:parameters]
         data = options[:data]
+
+        if parameters
+          path = Addressable::URI.parse(path).tap do |uri|
+            uri.query_values = parameters
+          end.to_s
+        end
+
         headers = @faraday.headers.merge(options[:headers] || {})
         response = @faraday.run_request(method, path, data, headers)
         assert_http_status(response, options[:status])

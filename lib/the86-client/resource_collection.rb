@@ -27,6 +27,14 @@ module The86::Client
       build(attributes).tap(&:save)
     end
 
+    attr_writer :parameters
+
+    def with_parameters(parameters)
+      dup.tap do |collection|
+        collection.parameters = parameters
+      end
+    end
+
     # Find and load a resource.
     #
     # If Resource#url_id is overridden, specify the attribute name.
@@ -59,7 +67,11 @@ module The86::Client
     private
 
     def records
-      @records ||= @connection.get(path: @path, status: 200)
+      @records ||= @connection.get(
+        path: @path,
+        parameters: @parameters,
+        status: 200
+      )
     end
 
   end

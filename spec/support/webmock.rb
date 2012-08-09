@@ -1,3 +1,4 @@
+require "addressable/uri"
 require "json"
 require "webmock/minitest"
 
@@ -22,10 +23,17 @@ module RequestExpectations
     rack_method_override!(options, :patch)
 
     url = options.fetch(:url)
+    parameters = options[:parameters]
     method = options.fetch(:method)
     request_body = options[:request_body]
     response_body = options[:response_body]
     request_headers = options[:request_headers]
+
+    if parameters
+      url = Addressable::URI.parse(url).tap do |url|
+        url.query_values = parameters
+      end.to_s
+    end
 
     request = {}
     request[:body] = request_body if request_body
