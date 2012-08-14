@@ -57,7 +57,7 @@ module The86::Client
     # Cache array representation.
     # Save building Resources for each record multiple times.
     def to_a
-      @_to_a = super
+      @_to_a ||= super
     end
 
     def [](index)
