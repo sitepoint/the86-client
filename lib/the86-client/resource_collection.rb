@@ -6,9 +6,7 @@ module The86::Client
     # Connection is a The86::Client::Connection instance.
     # Path is the API-relative path, e.g. "users".
     # Klass is class of each record in the collection, e.g. User
-    # Attributes is a Hash of attributes common to all items in collection,
-    #   and not fetched in HTTP response, e.g. parent items.
-    #   e.g. for conversations: { site: Site.new(slug: "...") }
+    # Parent is the parent resource of this collection and its items.
     # Records is an array of hashes, for pre-populating the collection.
     #   e.g. when an API response contains collections of child resources.
     def initialize(connection, path, klass, parent, records = nil)

@@ -24,6 +24,7 @@ module The86
         end
       end
 
+      # Insert a Faraday middleware at the top of the chain.
       def prepend(*parameters)
         @faraday.builder.insert(0, *parameters)
       end
