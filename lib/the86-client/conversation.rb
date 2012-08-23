@@ -5,6 +5,7 @@ module The86::Client
     attribute :content, String # For creating new Conversation.
     attribute :bumped_at, DateTime
     attribute :created_at, DateTime
+    attribute :original_created_at, DateTime
     attribute :updated_at, DateTime
 
     path "conversations"
