@@ -44,6 +44,8 @@ module The86
         dispatch(:post, options)
       end
 
+      private
+
       # Dispatch the HTTP request.
       # Returns the response body, JSON-decoded into an object or array.
       def dispatch(method, options)
@@ -62,8 +64,6 @@ module The86
         assert_http_status(response, options[:status])
         response.body
       end
-
-      private
 
       def url
         "%s://%s/api/v1" % [ Client.scheme, Client.domain ]
