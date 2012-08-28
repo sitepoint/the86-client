@@ -64,7 +64,7 @@ module The86::Client
     describe "finding a conversation" do
       it "gets the conversation, loads data into the resource" do
         expect_request(
-          url: "https://user:pass@example.org/api/v1/sites/test/conversations/4",
+          url: basic_auth_url("https://example.org/api/v1/sites/test/conversations/4"),
           method: :get,
           status: 200,
           response_body: {id: 4, posts: [{id: 8, content: "A post."}]},
@@ -77,8 +77,9 @@ module The86::Client
 
     describe "hiding and unhiding a conversation" do
       let(:conversation) { site.conversations.build(id: 2) }
-      let(:oauth_url) { "#{conversations_url}/2" }
-      let(:basic_auth_url) { oauth_url.sub("//", "//user:pass@") }
+      let(:user_auth_url) { "#{conversations_url}/2" }
+      let(:site_auth_url) { user_auth_url.sub("//", "//user:pass@") }
+      let(:site_auth_url) { basic_auth_url(user_auth_url) }
       let(:headers) { Hash.new }
       def expectation(url, hidden_param)
         {
@@ -92,20 +93,20 @@ module The86::Client
       end
       describe "without oauth" do
         it "patches the conversation as hidden_by_site when no oauth_token" do
-          expect_request(expectation(basic_auth_url, hidden_by_site: true))
+          expect_request(expectation(site_auth_url, hidden_by_site: true))
           conversation.hide
 
-          expect_request(expectation(basic_auth_url, hidden_by_site: false))
+          expect_request(expectation(site_auth_url, hidden_by_site: false))
           conversation.unhide
         end
       end
       describe "with oauth" do
         let(:headers) { {"Authorization" => "Bearer secret"} }
         it "patches the conversation as hidden_by_user when oauth_token present" do
-          expect_request(expectation(oauth_url, hidden_by_user: true))
+          expect_request(expectation(user_auth_url, hidden_by_user: true))
           conversation.hide(oauth_token: "secret")
 
-          expect_request(expectation(oauth_url, hidden_by_user: false))
+          expect_request(expectation(user_auth_url, hidden_by_user: false))
           conversation.unhide(oauth_token: "secret")
         end
       end
@@ -113,12 +114,15 @@ module The86::Client
 
     def expect_get_conversations(options)
       expect_request({
-        url: conversations_url.sub("//", "//user:pass@"),
+        url: basic_auth_url(conversations_url),
         method: :get,
         status: 200,
       }.merge(options))
     end
 
+    def basic_auth_url(url)
+      url.sub("//", "//user:pass@")
+    end
   end
 
 end
