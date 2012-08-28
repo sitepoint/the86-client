@@ -56,7 +56,7 @@ module The86
 
         if parameters
           path = Addressable::URI.parse(path).tap do |uri|
-            uri.query_values = parameters
+            uri.query_values = (uri.query_values || {}).merge(parameters)
           end.to_s
         end
 
