@@ -26,8 +26,9 @@ module RequestExpectations
     parameters = options[:parameters]
     method = options.fetch(:method)
     request_body = options[:request_body]
-    response_body = options[:response_body]
     request_headers = options[:request_headers]
+    response_body = options[:response_body]
+    response_headers = options[:response_headers]
 
     if parameters
       url = Addressable::URI.parse(url).tap do |url|
@@ -41,6 +42,7 @@ module RequestExpectations
 
     response = {status: options[:status] || 200}
     response[:body] = JSON.generate(response_body) if response_body
+    response[:headers] = response_headers if response_headers
 
     stub_and_assert_request(method, url).
       with(request).
