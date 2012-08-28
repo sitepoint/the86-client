@@ -28,7 +28,12 @@ module The86::Client
     attr_writer :parameters
 
     def with_parameters(parameters)
-      dup.tap do |collection|
+      self.class.new(
+        @connection,
+        @path,
+        @klass,
+        @parent
+      ).tap do |collection|
         collection.parameters = parameters
       end
     end
