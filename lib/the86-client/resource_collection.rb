@@ -1,3 +1,5 @@
+require "addressable/uri"
+
 module The86::Client
   class ResourceCollection
 
@@ -55,6 +57,27 @@ module The86::Client
       records.each do |attributes|
         yield build(attributes)
       end
+    end
+
+    # Load the next page of records, based on the pagination header, e.g.
+    # Link: <http://example.org/api/v1/sites/a/conversations?bumped_before=time>; rel="next"
+    def more
+      if more?
+        self.class.new(
+          @connection,
+          Addressable::URI.parse(http_response.links[:next]).request_uri,
+          @klass,
+          @parent
+        )
+      else
+        raise PaginationError, %{Collection has no 'Link: <url>; rel="next"' header}
+      end
+    end
+
+    # Whether there are more resources on a subsequent page.
+    # See documentation for #more method.
+    def more?
+      http_response.links.key? :next
     end
 
     # Cache array representation.

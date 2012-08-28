@@ -16,5 +16,8 @@ module The86
     class ValidationFailed < Error
     end
 
+    class PaginationError < Error
+    end
+
   end
 end

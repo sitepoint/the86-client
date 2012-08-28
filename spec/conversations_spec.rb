@@ -36,6 +36,28 @@ module The86::Client
         c.id.must_equal 10
         c.site.must_equal site
       end
+
+      it "handles pagination headers" do
+        url = "#{conversations_url}?limit=2"
+        next_url = "#{url}&bumped_before=timestamp"
+        expect_get_conversations(
+          url: basic_auth_url(url),
+          response_body: [{id: 1}, {id: 2}],
+          response_headers: {"Link" => %{<#{next_url}>; rel="next"}}
+        )
+        expect_get_conversations(
+          url: basic_auth_url(next_url),
+          response_body: [{id: 3}, {id: 4}],
+        )
+        page1 = site.conversations.with_parameters(limit: 2)
+        page1.more?.must_equal true
+
+        page2 = page1.more
+        page2.more?.must_equal false
+
+        page1.map(&:id).must_equal([1,2])
+        page2.map(&:id).must_equal([3,4])
+      end
     end
 
     describe "creating conversations" do
