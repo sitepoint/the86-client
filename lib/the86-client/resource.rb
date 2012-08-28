@@ -78,7 +78,7 @@ module The86
         self.attributes = connection.get(
           path: resource_path,
           status: 200
-        )
+        ).data
         self
       end
 
@@ -87,7 +87,7 @@ module The86
           path: resource_path,
           data: attributes,
           status: 200
-        )
+        ).data
       end
 
       def sendable_attributes
@@ -112,7 +112,7 @@ module The86
           path: self.class.collection_path(@parent),
           data: sendable_attributes,
           status: 201
-        )
+        ).data
       end
 
       def save_existing
@@ -120,7 +120,7 @@ module The86
           path: resource_path,
           data: sendable_attributes,
           status: 200
-        )
+        ).data
       end
 
       def connection

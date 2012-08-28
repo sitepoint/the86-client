@@ -64,12 +64,16 @@ module The86::Client
 
     private
 
-    def records
-      @records ||= @connection.get(
+    def http_response
+      @_http_response ||= @connection.get(
         path: @path,
         parameters: @parameters,
         status: 200
       )
+    end
+
+    def records
+      @records || http_response.data
     end
 
   end

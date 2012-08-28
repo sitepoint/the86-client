@@ -3,6 +3,7 @@
   connection
   errors
   oauth_bearer_authorization
+  response
 
   resource
   resource_collection

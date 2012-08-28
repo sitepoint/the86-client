@@ -47,7 +47,8 @@ module The86
       private
 
       # Dispatch the HTTP request.
-      # Returns the response body, JSON-decoded into an object or array.
+      # Returns the The86::Client::Response which contains the
+      # HTTP status code, headers and decoded response body.
       def dispatch(method, options)
         path = options.fetch(:path)
         parameters = options[:parameters]
@@ -61,8 +62,14 @@ module The86
 
         headers = @faraday.headers.merge(options[:headers] || {})
         response = @faraday.run_request(method, path, data, headers)
+
         assert_http_status(response, options[:status])
-        response.body
+
+        ::The86::Client::Response.new(
+          response.status,
+          response.headers,
+          response.body
+        )
       end
 
       def url
