@@ -1,5 +1,5 @@
 module The86
   module Client
-    VERSION = "0.0.8"
+    VERSION = "1.0.0"
   end
 end
