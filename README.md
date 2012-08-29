@@ -71,6 +71,19 @@ conversation.posts.create(
   content: "What are you guys talking about?",
   oauth_token: user.access_tokens.first.token
 )
+
+# List conversations:
+conversations = The86::Client.site("example").conversations
+second_page = conversations.more
+third_page = second_page.more
+third_page.each { |conversation| p conversation }
+
+# Check for updates:
+site = The86::Client.site("example")
+conversations = site.conversations.with_parameters(
+  posts_since: time.iso8601,
+  without_user: 64,
+)
 ```
 
 
