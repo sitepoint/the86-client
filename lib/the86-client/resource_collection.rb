@@ -27,7 +27,7 @@ module The86::Client
       build(attributes).tap(&:save)
     end
 
-    attr_writer :parameters
+    attr_accessor :parameters
 
     def with_parameters(parameters)
       self.class.new(
@@ -63,12 +63,15 @@ module The86::Client
     # Link: <http://example.org/api/v1/sites/a/conversations?bumped_before=time>; rel="next"
     def more
       if more?
+        url = Addressable::URI.parse(http_response.links[:next])
         self.class.new(
           @connection,
-          Addressable::URI.parse(http_response.links[:next]).request_uri,
+          url.path,
           @klass,
           @parent
-        )
+        ).tap do |collection|
+          collection.parameters = url.query_values
+        end
       else
         raise PaginationError, %{Collection has no 'Link: <url>; rel="next"' header}
       end
