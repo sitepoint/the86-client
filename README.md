@@ -84,6 +84,13 @@ conversations = site.conversations.with_parameters(
   posts_since: time.iso8601,
   without_user: 64,
 )
+
+# Like!
+post = site.conversations.first.posts.first
+post.likes.create(oauth_token: oauth_token)
+likes = post.load.likes
+puts "Liked by #{likes.count} people"
+likes.each { |like| puts "* #{like.user.name}" }
 ```
 
 

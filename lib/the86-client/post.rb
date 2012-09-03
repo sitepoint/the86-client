@@ -12,6 +12,7 @@ module The86::Client
     belongs_to :conversation
     has_one :user, ->{ User }
     has_one :in_reply_to, ->{ Post }
+    has_many :likes, ->{ Like }
 
     include CanBeHidden
 

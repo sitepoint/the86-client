@@ -21,5 +21,19 @@ module The86::Client
         post.user.name.must_equal "John Citizen"
       end
     end
+
+    describe "#links" do
+      let(:post) do
+        Post.new(likes: [
+          {user: {id: 8, name: "John Citizen"}},
+          {user: {id: 2, name: "Sandman Slim"}}
+        ])
+      end
+      it "returns two The86::Client::Like instances" do
+        likes = post.likes
+        likes.count.must_equal 2
+        likes.first.user.name.must_equal "John Citizen"
+      end
+    end
   end
 end

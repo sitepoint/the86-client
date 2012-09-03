@@ -13,6 +13,7 @@
   site
   post
   conversation
+  like
 }.each { |r| require "the86-client/#{r}" }
 
 module The86
