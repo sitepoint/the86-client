@@ -60,7 +60,7 @@ module The86::Client
     end
 
     # Load the next page of records, based on the pagination header, e.g.
-    # Link: <http://example.org/api/v1/sites/a/conversations?bumped_before=time>; rel="next"
+    # Link: <http://example.org/api/v1/groups/a/conversations?bumped_before=time>; rel="next"
     def more
       if more?
         url = Addressable::URI.parse(http_response.links[:next])

@@ -23,7 +23,7 @@ module The86
         end
 
         # The name of the parent resource attribute.
-        # e.g: belongs_to :site
+        # e.g: belongs_to :group
         def belongs_to(name)
           alias_method "#{name}=", :parent=
           alias_method name, :parent

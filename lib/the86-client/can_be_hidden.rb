@@ -13,7 +13,7 @@ module The86::Client
 
     def set_hidden(hidden, attributes)
       self.oauth_token = attributes[:oauth_token]
-      key = oauth_token ? :hidden_by_user : :hidden_by_site
+      key = oauth_token ? :hidden_by_user : :hidden_by_group
       patch(key => hidden)
     end
 

@@ -8,7 +8,7 @@ module The86::Client
     attribute :updated_at, DateTime
 
     path "conversations"
-    belongs_to :site
+    belongs_to :group
     has_many :posts, ->{ Post }
 
     include CanBeHidden
