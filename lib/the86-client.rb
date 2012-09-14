@@ -10,7 +10,7 @@
   can_be_hidden
   access_token
   user
-  site
+  group
   post
   conversation
   like
@@ -21,17 +21,17 @@ module The86
 
     # API entry points.
 
-    def self.sites
+    def self.groups
       ResourceCollection.new(
         Connection.new,
-        "sites",
-        Site,
+        "groups",
+        Group,
         nil
       )
     end
 
-    def self.site(slug)
-      Site.new(slug: slug)
+    def self.group(slug)
+      Group.new(slug: slug)
     end
 
     def self.users

@@ -1,5 +1,5 @@
 module The86::Client
-  class Site < Resource
+  class Group < Resource
 
     attribute :id, Integer
     attribute :name, String
@@ -7,7 +7,7 @@ module The86::Client
     attribute :created_at, DateTime
     attribute :updated_at, DateTime
 
-    path "sites"
+    path "groups"
     has_many :conversations, ->{ Conversation }
 
     def url_id

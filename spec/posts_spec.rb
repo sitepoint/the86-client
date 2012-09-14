@@ -4,13 +4,13 @@ module The86::Client
 
   describe Post do
 
-    let(:site) { The86::Client.site("test") }
-    let(:conversation) { Conversation.new(id: 32, site: site) }
+    let(:group) { The86::Client.group("test") }
+    let(:conversation) { Conversation.new(id: 32, group: group) }
     let(:original_post) do
       Post.new(id: 64, conversation: conversation, content: "Hello!")
     end
-    let(:site_url) { "https://example.org/api/v1/sites/test" }
-    let(:conversation_url) { "#{site_url}/conversations/32" }
+    let(:group_url) { "https://example.org/api/v1/groups/test" }
+    let(:conversation_url) { "#{group_url}/conversations/32" }
     let(:posts_url) { "#{conversation_url}/posts" }
 
     describe "replying to a post" do
@@ -79,11 +79,11 @@ module The86::Client
         }
       end
       describe "without oauth" do
-        it "patches the post as hidden_by_site when no oauth_token" do
-          expect_request(expectation(basic_auth_url, hidden_by_site: true))
+        it "patches the post as hidden_by_group when no oauth_token" do
+          expect_request(expectation(basic_auth_url, hidden_by_group: true))
           post.hide
 
-          expect_request(expectation(basic_auth_url, hidden_by_site: false))
+          expect_request(expectation(basic_auth_url, hidden_by_group: false))
           post.unhide
         end
       end

@@ -4,24 +4,24 @@ module The86::Client
 
   describe "Conversations" do
 
-    let(:site) { The86::Client.site("test") }
-    let(:site_url) { "https://example.org/api/v1/sites/test" }
-    let(:conversations_url) { "#{site_url}/conversations" }
+    let(:group) { The86::Client.group("test") }
+    let(:group_url) { "https://example.org/api/v1/groups/test" }
+    let(:conversations_url) { "#{group_url}/conversations" }
 
     describe "listing conversations" do
-      it "returns empty array for site without conversations" do
+      it "returns empty array for group without conversations" do
         expect_get_conversations(response_body: [])
-        site.conversations.to_a.size.must_equal 0
+        group.conversations.to_a.size.must_equal 0
       end
 
       it "returns collection of conversations" do
         expect_get_conversations(response_body: [{id: 10}, {id: 12}])
-        conversations = site.conversations
+        conversations = group.conversations
         conversations.to_a.size.must_equal 2
         c = conversations.first
         c.must_be_instance_of Conversation
         c.id.must_equal 10
-        c.site.must_equal site
+        c.group.must_equal group
       end
 
       it "sends posts_since parameter" do
@@ -29,12 +29,12 @@ module The86::Client
           response_body: [{id: 10}, {id: 12}],
           parameters: {posts_since: "time"}
         )
-        conversations = site.conversations.with_parameters(posts_since: "time")
+        conversations = group.conversations.with_parameters(posts_since: "time")
         conversations.to_a.size.must_equal 2
         c = conversations.first
         c.must_be_instance_of Conversation
         c.id.must_equal 10
-        c.site.must_equal site
+        c.group.must_equal group
       end
 
       it "handles pagination headers" do
@@ -49,7 +49,7 @@ module The86::Client
           url: basic_auth_url(next_url),
           response_body: [{id: 3}, {id: 4}],
         )
-        page1 = site.conversations.with_parameters(limit: 2)
+        page1 = group.conversations.with_parameters(limit: 2)
         page1.more?.must_equal true
 
         page2 = page1.more
@@ -74,9 +74,9 @@ module The86::Client
         )
 
         # Emulate parameters being serialized & stored for a later request.
-        page1 = site.conversations.with_parameters(limit: 2)
+        page1 = group.conversations.with_parameters(limit: 2)
         parameters = JSON.parse(JSON.generate(page1.more.parameters))
-        page2 = site.conversations.with_parameters(parameters)
+        page2 = group.conversations.with_parameters(parameters)
 
         parameters.must_equal("limit" => "2", "bumped_before" => "timestamp")
 
@@ -99,7 +99,7 @@ module The86::Client
           request_headers: {"Authorization" => "Bearer secrettoken"},
         )
 
-        c = site.conversations.create(
+        c = group.conversations.create(
           content: "A new conversation.",
           oauth_token: "secrettoken",
         )
@@ -114,22 +114,22 @@ module The86::Client
     describe "finding a conversation" do
       it "gets the conversation, loads data into the resource" do
         expect_request(
-          url: basic_auth_url("https://example.org/api/v1/sites/test/conversations/4"),
+          url: basic_auth_url("https://example.org/api/v1/groups/test/conversations/4"),
           method: :get,
           status: 200,
           response_body: {id: 4, posts: [{id: 8, content: "A post."}]},
         )
-        c = site.conversations.find(4)
+        c = group.conversations.find(4)
         c.id.must_equal 4
         c.posts.first.content.must_equal "A post."
       end
     end
 
     describe "hiding and unhiding a conversation" do
-      let(:conversation) { site.conversations.build(id: 2) }
+      let(:conversation) { group.conversations.build(id: 2) }
       let(:user_auth_url) { "#{conversations_url}/2" }
-      let(:site_auth_url) { user_auth_url.sub("//", "//user:pass@") }
-      let(:site_auth_url) { basic_auth_url(user_auth_url) }
+      let(:group_auth_url) { user_auth_url.sub("//", "//user:pass@") }
+      let(:group_auth_url) { basic_auth_url(user_auth_url) }
       let(:headers) { Hash.new }
       def expectation(url, hidden_param)
         {
@@ -142,11 +142,11 @@ module The86::Client
         }
       end
       describe "without oauth" do
-        it "patches the conversation as hidden_by_site when no oauth_token" do
-          expect_request(expectation(site_auth_url, hidden_by_site: true))
+        it "patches the conversation as hidden_by_group when no oauth_token" do
+          expect_request(expectation(group_auth_url, hidden_by_group: true))
           conversation.hide
 
-          expect_request(expectation(site_auth_url, hidden_by_site: false))
+          expect_request(expectation(group_auth_url, hidden_by_group: false))
           conversation.unhide
         end
       end
