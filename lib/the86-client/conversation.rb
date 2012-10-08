@@ -11,6 +11,7 @@ module The86::Client
     path "conversations"
     belongs_to :group
     has_many :posts, ->{ Post }
+    has_many :metadata, ->{ ConversationMetadatum }
 
     include CanBeHidden
 
