@@ -14,6 +14,8 @@
   post
   conversation
   like
+  metadatum
+  metadatum/conversation_metadatum
 }.each { |r| require "the86-client/#{r}" }
 
 module The86
