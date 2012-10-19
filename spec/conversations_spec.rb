@@ -162,6 +162,33 @@ module The86::Client
       end
     end
 
+    describe "muting a conversation" do
+      let(:conversation) { group.conversations.build(id: 2) }
+      describe "without oauth" do
+        it "raises an error" do
+          ->{ conversation.mute }.must_raise Error
+        end
+      end
+      describe "with oauth" do
+        def expectation(url, hidden_param={})
+          {
+            url: url,
+            method: :post,
+            status: 200,
+            request_body: hidden_param,
+            request_headers: headers,
+            response_body: {id: 2}.merge(hidden_param),
+          }
+        end
+        let(:mute_url) { "#{conversations_url}/2/mute" }
+        let(:headers) { {"Authorization" => "Bearer secret"} }
+        it "mutes the conversation" do
+          expect_request(expectation(mute_url))
+          conversation.mute(oauth_token: "secret")
+        end
+      end
+    end
+
     def expect_get_conversations(options)
       expect_request({
         url: basic_auth_url(conversations_url),

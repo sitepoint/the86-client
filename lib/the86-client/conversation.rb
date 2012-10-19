@@ -15,5 +15,17 @@ module The86::Client
 
     include CanBeHidden
 
+    def mute(attributes={})
+      unless attributes[:oauth_token]
+        raise Error, "Conversations must be hidden by a user"
+      end
+      self.oauth_token = attributes[:oauth_token]
+      connection.post(
+        path: resource_path << "/mute",
+        data: sendable_attributes,
+        status: 200
+      ).data
+    end
+
   end
 end
