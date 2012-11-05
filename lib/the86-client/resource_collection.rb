@@ -93,6 +93,10 @@ module The86::Client
       to_a[index]
     end
 
+    def << record
+      (@records || []) << record
+    end
+
     private
 
     def http_response

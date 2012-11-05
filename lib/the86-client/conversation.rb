@@ -13,6 +13,8 @@ module The86::Client
     has_many :posts, ->{ Post }
     has_many :metadata, ->{ ConversationMetadatum }
 
+    accepts_nested_attributes_for :metadata
+
     include CanBeHidden
 
     def mute(attributes={})

@@ -48,6 +48,11 @@ module The86
           end
         end
 
+        # Allow nested attribute creation
+        def accepts_nested_attributes_for(name)
+          attribute name, Array
+        end
+
       end
 
       ##
@@ -130,13 +135,18 @@ module The86
       end
 
       def has_many_reader(name, class_proc)
-        klass = class_proc.call
-        ResourceCollection.new(
-          connection,
-          klass.collection_path(self),
-          class_proc.call,
-          self,
-          (@_has_many || {})[name] || nil
+        variable_name = "@_has_many_reader_#{name}"
+        instance_variable_get(variable_name) ||
+          instance_variable_set(variable_name, (
+            klass = class_proc.call
+            ResourceCollection.new(
+              connection,
+              klass.collection_path(self),
+              class_proc.call,
+              self,
+              (@_has_many || {})[name] || nil
+            )
+          )
         )
       rescue KeyError
         raise Error, "No reference to children :#{name}"

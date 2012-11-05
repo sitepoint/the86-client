@@ -90,19 +90,22 @@ module The86::Client
 
     describe "creating conversations" do
       it "posts and returns a conversation with the first post content" do
+
+        c = group.conversations.build(
+          content: "A new conversation.",
+          oauth_token: "secrettoken",
+        )
+
         expect_request(
           url: conversations_url,
           method: :post,
           status: 201,
-          request_body: {content: "A new conversation."},
+          request_body: {content: "A new conversation.", metadata: c.metadata.to_s},
           response_body: {id: 2, posts: [{id: 5, content: "A new conversation."}]},
           request_headers: {"Authorization" => "Bearer secrettoken"},
         )
 
-        c = group.conversations.create(
-          content: "A new conversation.",
-          oauth_token: "secrettoken",
-        )
+        c.save
 
         c.id.must_equal 2
         posts = c.posts
