@@ -75,6 +75,14 @@ module The86
         "%s/%s" % [ self.class.collection_path(@parent), url_id ]
       end
 
+      # TODO: The parent resource should be appropriately updated that the resource no longer exists
+      def delete!
+        connection.delete(
+          path: resource_path,
+          status: 204
+        ).data
+      end
+
       def save
         id ? save_existing : save_new
       end

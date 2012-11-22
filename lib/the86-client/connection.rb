@@ -43,6 +43,10 @@ module The86
       def post(options)
         dispatch(:post, options)
       end
+      
+      def delete(options)
+        dispatch(:delete, options)
+      end
 
       private
 

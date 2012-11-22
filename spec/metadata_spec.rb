@@ -40,6 +40,28 @@ module The86::Client
       conversation.metadata.map(&:value).must_equal %w{ foo bar }
     end
 
+    it "DELETEs a metadatum" do
+      metadata_auth_url = metadata_url.sub("//", "//user:pass@")
+
+      expect_request(
+        url: metadata_auth_url,
+        method: :get,
+        status: 200,
+        response_body: [
+          { id: "1", key: "tag", value: "foo" },
+          { id: "2", key: "tag", value: "bar" },
+        ],
+      )
+
+      m = conversation.metadata
+
+      expect_request(
+        url: "#{metadata_auth_url}/#{m.first.id}",
+        method: :delete,
+        status: 204)
+    
+      m.first.delete!
+    end
   end
 
 
