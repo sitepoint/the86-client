@@ -29,5 +29,12 @@ module The86::Client
       ).data
     end
 
+    def set_metadata(attributes={})
+      connection.patch(
+        path: resource_path << "/metadata",
+        data: attributes,
+        status: 204
+      )
+    end
   end
 end

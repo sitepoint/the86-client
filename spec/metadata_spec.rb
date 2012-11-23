@@ -64,5 +64,36 @@ module The86::Client
     end
   end
 
+  describe Conversation do
+    let(:group) { The86::Client.group("test") }
+    let(:group_url) { "https://example.org/api/v1/groups/test" }
+    let(:conversation) { group.conversations.build(id: 1) }
+    let(:metadata_url) { "#{group_url}/conversations/1/metadata" }
+    
+    it "PATCHes metadata for a given key" do
+      metadata_auth_url = metadata_url.sub("//", "//user:pass@")
 
+      expect_request(
+        url: metadata_auth_url,
+        method: :patch,
+        status: 204,
+        request_body: { key: ["a", "b", "c"] },
+      )
+      
+      conversation.set_metadata({ key: ["a", "b", "c"]})
+    end
+    
+    it "clears a key by sending an empty array" do
+      metadata_auth_url = metadata_url.sub("//", "//user:pass@")
+
+      expect_request(
+        url: metadata_auth_url,
+        method: :patch,
+        status: 204,
+        request_body: { key: [] },
+      )
+      
+      conversation.set_metadata({key: []})
+    end
+  end
 end
