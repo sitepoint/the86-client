@@ -13,9 +13,16 @@ module The86
         def faraday_adapter
           @faraday_adapter || Faraday.default_adapter
         end
+
       end
 
+      attr_accessor :timeout, :open_timeout
+
       def initialize
+        # Default some basic connection options
+        @timeout = 15 #seconds
+        @open_timeout = 3 #seconds
+
         @faraday = Faraday.new(url) do |conn|
           conn.request :json
           conn.response :json
@@ -65,7 +72,10 @@ module The86
         end
 
         headers = @faraday.headers.merge(options[:headers] || {})
-        response = @faraday.run_request(method, path, data, headers)
+        response = @faraday.run_request(method, path, data, headers) do |req|
+          req.options[:timeout] = @timeout
+          req.options[:open_timeout] = @open_timeout
+        end
 
         assert_http_status(response, options[:status])
 
