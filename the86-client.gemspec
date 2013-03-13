@@ -24,7 +24,7 @@ Gem::Specification.new do |gem|
   gem.add_runtime_dependency "hashie"
 
   # Addressable: URI implementation.
-  gem.add_runtime_dependency "addressable"
+  gem.add_runtime_dependency "addressable", '= 2.2.7'
 
   # Virtus: declare attributes on plain Ruby objects.
   gem.add_runtime_dependency "virtus"
