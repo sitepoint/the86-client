@@ -25,7 +25,7 @@ module The86::Client
       connection.post(
         path: resource_path << "/mute",
         data: sendable_attributes,
-        status: 200
+        status: 204
       ).data
     end
 
