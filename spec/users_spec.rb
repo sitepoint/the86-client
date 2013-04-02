@@ -12,11 +12,6 @@ module The86::Client
         user.name.must_equal "John Appleseed"
       end
 
-      it "raises error for 200 OK" do
-        expect_create_user(status: 200, response_body: {id: 1, name: "John Appleseed"})
-        ->{ The86::Client.users.create(name: "John Appleseed") }.must_raise Error
-      end
-
       it "raises ValidationFailed for 422 response" do
         expect_create_user(status: 422, request_body: {name: ""})
         ->{ The86::Client.users.create(name: "") }.must_raise ValidationFailed

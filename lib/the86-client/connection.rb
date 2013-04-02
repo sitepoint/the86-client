@@ -92,7 +92,7 @@ module The86
 
       def assert_http_status(response, status)
         case response.status
-        when nil, status then return
+        when nil, 200, 201, 204, status then return
         when 401
           raise Unauthorized
         when 422
