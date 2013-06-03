@@ -29,6 +29,9 @@ Gem::Specification.new do |gem|
   # Virtus: declare attributes on plain Ruby objects.
   gem.add_runtime_dependency "virtus"
 
+  # Sanitize: clean up incoming post content
+  gem.add_runtime_dependency "sanitize"
+
   ##
   # Development dependencies.
 
