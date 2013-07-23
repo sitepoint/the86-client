@@ -126,6 +126,18 @@ module The86::Client
         c.id.must_equal 4
         c.posts.first.content.must_equal "A post."
       end
+
+      it "raises NotFoundError when the conversation does not exist" do
+        expect_request(
+          url: basic_auth_url("https://example.org/api/v1/groups/test/conversations/9999"),
+          method: :get,
+          status: 404,
+          response_body: Hash.new
+        )
+        assert_raises NotFoundError do
+          group.conversations.find(9999)
+        end
+      end
     end
 
     describe "hiding and unhiding a conversation" do

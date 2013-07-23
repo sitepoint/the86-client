@@ -95,6 +95,8 @@ module The86
         when nil, 200, 201, 204, status then return
         when 401
           raise Unauthorized
+        when 404
+          raise NotFoundError, ("Not Found: #{response.env[:url].to_s}" rescue response)
         when 422
           raise ValidationFailed, "Validation failed: #{response.body.to_s}"
         when 500
