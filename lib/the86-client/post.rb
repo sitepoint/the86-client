@@ -28,9 +28,5 @@ module The86::Client
       )
     end
 
-    def content
-      require 'sanitize'
-      Sanitize.clean(super, Sanitize::Config::RELAXED)
-    end
   end
 end
