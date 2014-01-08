@@ -24,7 +24,7 @@ module The86
         @open_timeout = 3 #seconds
 
         @faraday = Faraday.new(url) do |conn|
-          conn.request(:retry, max: 3, exceptions: [ Faraday::Error::TimeoutError, Faraday::Error::ConnectionFailed ])
+          conn.request :retry
           conn.request :json
           conn.response :json
           conn.basic_auth(*Client.credentials)
