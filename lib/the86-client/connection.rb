@@ -101,6 +101,8 @@ module The86
           raise ValidationFailed, "Validation failed: #{response.body.to_s}"
         when 500
           raise ServerError, internal_server_error_message(status, response)
+        when 503
+          raise ServerError, "Service unavailable"
         else
           raise Error, "Expected HTTP #{status}, got HTTP #{response.status}"
         end
