@@ -37,7 +37,7 @@ Gem::Specification.new do |gem|
   gem.add_development_dependency "guard-minitest"
 
   # MiniTest: unit test / spec library.
-  gem.add_development_dependency "minitest"
+  gem.add_development_dependency "minitest", "~> 4.6"
   gem.add_development_dependency "ansi"
   gem.add_development_dependency "turn"
 
