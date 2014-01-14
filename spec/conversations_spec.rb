@@ -24,9 +24,7 @@ module The86::Client
         c.group.must_equal group
       end
 
-      # This test is specifically for a breakage of Addressable::URI that occurs
-      # with nested hashes when version > 2.2.7
-      it "does not fail when specifying metadata" do
+      it "does not fail when specifying metadata (nested hashes)" do
         meta_hash = { metadata: [ {key: "key1", value: "value1"}, {key: "key2", value: "value2"}] }
         expect_get_conversations(response_body: [{id: 10}, {id: 12}], parameters: meta_hash)
         conversations = group.conversations.with_parameters(meta_hash)

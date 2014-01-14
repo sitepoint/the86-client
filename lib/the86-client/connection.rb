@@ -1,6 +1,7 @@
 require "addressable/uri"
 require "faraday"
 require "faraday_middleware"
+require "rack/utils"
 
 module The86
   module Client
@@ -68,7 +69,10 @@ module The86
 
         if parameters
           path = Addressable::URI.parse(path).tap do |uri|
-            uri.query_values = (uri.query_values || {}).merge(parameters)
+            # Parse current query
+            query = Rack::Utils.parse_query(uri.query)
+            # Append parameters to current query
+            uri.query = Rack::Utils.build_query(query.merge(parameters))
           end.to_s
         end
 

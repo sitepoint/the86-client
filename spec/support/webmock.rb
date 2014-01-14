@@ -1,6 +1,7 @@
 require "addressable/uri"
 require "json"
 require "webmock/minitest"
+require "rack/utils"
 
 WebMock.disable_net_connect!
 
@@ -32,7 +33,7 @@ module RequestExpectations
 
     if parameters
       url = Addressable::URI.parse(url).tap do |url|
-        url.query_values = parameters
+        url.query = Rack::Utils.build_query(parameters)
       end.to_s
     end
 
