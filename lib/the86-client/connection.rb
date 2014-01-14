@@ -70,9 +70,10 @@ module The86
         if parameters
           path = Addressable::URI.parse(path).tap do |uri|
             # Parse current query
-            query = Rack::Utils.parse_query(uri.query)
+            query = Rack::Utils.parse_nested_query(uri.query)
+            stringify_integers_deep!(parameters) # fix for https://github.com/rack/rack/issues/557
             # Append parameters to current query
-            uri.query = Rack::Utils.build_query(query.merge(parameters))
+            uri.query = Rack::Utils.build_nested_query(query.merge(parameters))
           end.to_s
         end
 
@@ -128,6 +129,14 @@ module The86
             expected_status,
             response.status,
           ]
+        end
+      end
+
+      # Iterate over hash and make all integer values strings.
+      def stringify_integers_deep!(hash)
+        hash.each do |key, value|
+            hash[key]    = value.to_s if value.kind_of?(Integer)
+            stringify_integers_deep!(value) if value.kind_of?(Hash)
         end
       end
 

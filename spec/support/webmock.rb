@@ -33,7 +33,8 @@ module RequestExpectations
 
     if parameters
       url = Addressable::URI.parse(url).tap do |url|
-        url.query = Rack::Utils.build_query(parameters)
+        stringify_integers_deep!(parameters) # fix for https://github.com/rack/rack/issues/557
+        url.query = Rack::Utils.build_nested_query(parameters)
       end.to_s
     end
 
@@ -61,6 +62,14 @@ module RequestExpectations
       options[:request_headers] ||= {}
       options[:request_headers]["X-Http-Method-Override"] = options[:method]
       options[:method] = :post
+    end
+  end
+
+  # Iterate over hash and make all integer values strings.
+  def stringify_integers_deep!(hash)
+    hash.each do |key, value|
+        hash[key]    = value.to_s if value.kind_of?(Integer)
+        stringify_integers_deep!(value) if value.kind_of?(Hash)
     end
   end
 
