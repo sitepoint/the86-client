@@ -4,7 +4,7 @@ module The86
   module Client
     class Resource
 
-      include Virtus
+      include Virtus.model
 
       # Assigned by Virtus constructor.
       attr_accessor :oauth_token
