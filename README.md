@@ -53,7 +53,7 @@ user = The86::Client.users.create(name: "John Citizen")
 oauth_token = user.access_tokens.first.token
 
 # Create a new conversation:
-conversation = The86::Client.site("example").conversations.create(
+conversation = The86::Client.group("example").conversations.create(
   content: "Hello world!",
   oauth_token: oauth_token
 )
@@ -73,20 +73,20 @@ conversation.posts.create(
 )
 
 # List conversations:
-conversations = The86::Client.site("example").conversations
+conversations = The86::Client.group("example").conversations
 second_page = conversations.more
 third_page = second_page.more
 third_page.each { |conversation| p conversation }
 
 # Check for updates:
-site = The86::Client.site("example")
-conversations = site.conversations.with_parameters(
+group = The86::Client.group("example")
+conversations = group.conversations.with_parameters(
   posts_since: time.iso8601,
   without_user: 64,
 )
 
 # Like!
-post = site.conversations.first.posts.first
+post = group.conversations.first.posts.first
 post.likes.create(oauth_token: oauth_token)
 likes = post.load.likes
 puts "Liked by #{likes.count} people"
