@@ -104,11 +104,14 @@ module The86
       end
 
       def sendable_attributes
-        attributes.reject do |key, value|
+        sa = attributes.reject do |key, value|
           [:id, :created_at, :updated_at].include?(key) ||
             value.kind_of?(Resource) ||
             value.nil?
         end
+
+        sa[:metadata] = attributes[:metadata].as_json
+        sa
       end
 
       def ==(other)
